@@ -35,3 +35,29 @@ Code was moved from old to new files as follows:
                   RGBRingLed.h
                   RGBRingLed.cpp
 ```
+
+## Archive-0022
+
+This directory contains the original code that works only on the Arduino 0022 platform.
+
+## optiboot-RGBRing
+
+The RGB Ring uses a customized version of the optiboot loader. The customizations modify the pins used to flash 
+the LED during the booloader stage. This directory contains the version of optiboot shipped with Arduino 1.0.3
+with the customized changes. 
+
+There are 4 methods you can use to flash a bootloader onto the atmega168:
+
+1. **AVRISP serial:** Use an FTDI board that connects to a USB port and sends a serial signal to the
+6-pin serial interface on the board.
+2. **AVRISP mkII:** This is a programmer from Amtel that connects to the 6-pin ISP interface on the board.
+3. **USBTiny:** A less expensive 3rd-party programmer based on the Amtel AVR processor.
+4. **Arduino as ISP:** If you have an extra Arduino lying around you can wire it up as a programmer.
+
+The serial interface requires that an existing bootloader of the correct protocol already exists on the chip. The 
+methods that use the 6-pin ISP interface don't require a bootloader.
+
+
+
+
+
