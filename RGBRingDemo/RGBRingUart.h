@@ -7,17 +7,13 @@
 
 #include <Arduino.h>
 
+//#define UART
+
+#define COMMAND_SIZE   30
 #define RX_SIZE        64      /* UART receive buffer size (must be 2^n ) <=256 */
 #define TX_SIZE        64      /* UART transmit buffer size (must be 2^n, 16<= ~ <=256 ) */
 #define RX_MASK        (RX_SIZE-1)
 #define TX_MASK        (TX_SIZE-1)
-#define COMMAND_SIZE   30
-
-#ifndef BAUD_RATE
-#define BAUD_RATE      19200
-#endif
-
-//#define UART
 
 #ifdef UART
 void InitUART(void);

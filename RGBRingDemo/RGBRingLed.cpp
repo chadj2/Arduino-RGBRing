@@ -5,18 +5,9 @@
 
 #include "RGBRingLed.h"
 
- /* memory for RED LEDs */
-uint8_t     brightness[3][__leds];   
-
 void InitLED(void)
 {
-    DDRB |= ALLLED;    	// set PORTB as output
-    PORTB &=~ ALLLED; 	// all pins HIGH --> cathodes HIGH --> LEDs off
-    CDDR_A |= ALED;    	// set COLORPORT #5-7 as output
-    CPORT_A &= ~ALED; 	// pins #5-7 LOW --> anodes LOW --> LEDs off
-    CDDR_B |= BLED;    	// set COLORPORT #5-7 as output
-    CPORT_B &= ~BLED; 	// pins #5-7 LOW --> anodes LOW --> LEDs off
-	
+	InitTimer();
     set_all_rgb (0, 0, 0);
 }
 

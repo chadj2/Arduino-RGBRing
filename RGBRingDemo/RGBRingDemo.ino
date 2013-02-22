@@ -47,7 +47,7 @@ void setup()
 #else
     Serial.begin(38400);           // start serial for output
 #endif
-    InitIO();
+    InitLED();
 
     Wire.begin(4);                // join i2c bus with address #4
     Wire.onReceive(receiveEvent); // register event

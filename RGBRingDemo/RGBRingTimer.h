@@ -1,24 +1,19 @@
 //////////////////////////////////////////////////////////////////////////////
 // Module: RGBRingTimer
-// Description: Provides a rotate effect for the LEDs based on an 
-//    interrupt timer.
+// Description: Provides an interrput timer that drives a PCM signal for LED
+//     illumination.
 //////////////////////////////////////////////////////////////////////////////
 
-#include "RGBRingLed.h"
+#include <Arduino.h>
 
-enum DIRECTION_t {
-        NONE,
-    CW,
-    CCW
-};
+#define __leds 		12
+#define __max_led 	__leds - 1
+#define __brightness_levels 	64
+#define __max_brightness 		__brightness_levels-1
 
-extern uint16_t wobble_pattern_1[__leds];
-extern uint16_t wobble_pattern_2[__leds];
-extern uint16_t wobble_pattern_3[__leds];
+extern uint8_t brightness[3][__leds]; 
 
-void InitIO(void);
-void setup_timer2_ovf (void);
+void InitTimer(void);
 void enable_timer2_ovf (void);
 void disable_timer2_ovf (void); 
-void swaywobble(uint8_t _delay,uint8_t dir);
 void setwobble(uint16_t var);

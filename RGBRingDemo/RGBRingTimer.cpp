@@ -1,7 +1,7 @@
 //////////////////////////////////////////////////////////////////////////////
 // Module: RGBRingTimer
-// Description: Provides a rotate effect for the LEDs based on an 
-//    interrupt timer.
+// Description: Provides an interrput timer that drives a PCM signal for LED
+//     illumination.
 //////////////////////////////////////////////////////////////////////////////
 
 #include "RGBRingTimer.h"
@@ -14,6 +14,46 @@
 
 uint16_t    wobble = 0x0FFF;
 
+// Starting from the D10,Clockwise
+#define LED0 PB4
+#define LED1 PB3
+#define LED2 PB2
+#define LED3 PB1
+#define LED4 PB0
+#define LED5 PB5
+
+#define NEW_LED
+
+#if defined NEW_LED
+  #define RED_A     PC1
+  #define GREEN_A PC0
+  #define BLUE_A     PC2
+
+  #define RED_B     PD5
+  #define GREEN_B PD6
+  #define BLUE_B     PD7
+#elif
+  #define RED_A     PC1
+  #define GREEN_A PC2
+  #define BLUE_A     PC0
+
+  #define RED_B     PD5
+  #define GREEN_B PD7
+  #define BLUE_B     PD6
+#endif
+
+#define ALLLED  	((1<<LED0)|(1<<LED1)|(1<<LED2)|(1<<LED3)|(1<<LED4)|(1<<LED5))
+
+#define ALED 		((1 << RED_A) | (1 << GREEN_A) | (1 << BLUE_A))
+#define BLED 		((1 << RED_B) | (1 << GREEN_B) | (1 << BLUE_B))
+#define CDDR_A    	DDRC
+#define CPORT_A    	PORTC
+#define CDDR_B    	DDRD
+#define CPORT_B    	PORTD
+
+ /* memory for RED LEDs */
+uint8_t     brightness[3][__leds];   
+
 uint8_t     arrange[6] = { 
 	(1<<LED0), 
 	(1<<LED1), 
@@ -22,55 +62,19 @@ uint8_t     arrange[6] = {
 	(1<<LED4), 
 	(1<<LED5) };
 
-uint16_t wobble_pattern_1[__leds] = {
-    0b0000000000000001,
-    0b0000000000000010,
-    0b0000000000000100,
-    0b0000000000001000,
-    0b0000000000010000,
-    0b0000000000100000,
-    0b0000000001000000,
-    0b0000000010000000,
-    0b0000000100000000,
-    0b0000001000000000,
-    0b0000010000000000,
-    0b0000100000000000
-};
-
-uint16_t wobble_pattern_2[__leds] = {
-	0b0000000000000001,
-	0b0000100000000010,
-	0b0000010000001000,
-	0b0000001000001000,
-	0b0000000100010000,
-	0b0000000010100000,
-	0b0000000001000000,
-	0b0000000010100000,
-	0b0000000100010000,
-	0b0000001000001000,
-	0b0000010000000100,
-	0b0000100000000010
-};
-
-uint16_t wobble_pattern_3[__leds] = {
-	0b0000000000000001,
-	0b0000100000000010,
-	0b0000010000001000,
-	0b0000001000001000,
-	0b0000000100010000,
-	0b0000000010100000,
-	0b0000000001000000,
-	0b0000000010100000,
-	0b0000000100010000,
-	0b0000001000001000,
-	0b0000010000000100,
-	0b0000100000000010
-};
+	
+void setup_timer2_ovf (void);
 
 // -----------------------Function InitIO-------------------------------//
-void InitIO(void)
+void InitTimer(void)
 {
-	InitLED();
+	DDRB |= ALLLED;    	// set PORTB as output
+    PORTB &=~ ALLLED; 	// all pins HIGH --> cathodes HIGH --> LEDs off
+    CDDR_A |= ALED;    	// set COLORPORT #5-7 as output
+    CPORT_A &= ~ALED; 	// pins #5-7 LOW --> anodes LOW --> LEDs off
+    CDDR_B |= BLED;    	// set COLORPORT #5-7 as output
+    CPORT_B &= ~BLED; 	// pins #5-7 LOW --> anodes LOW --> LEDs off
+	
     setup_timer2_ovf ();        
     enable_timer2_ovf ();    
 }
@@ -79,29 +83,6 @@ void InitIO(void)
 void setwobble(uint16_t var)
 {
     wobble=var;
-}
-
-// -----------------------Function swaywobble-------------------------------//
-void swaywobble (uint8_t _delay,uint8_t dir)
-{
-  uint8_t ls = 0;
-  
-  if(dir==CW)
-  {
-    for (ls = 0; ls <= __max_led; ls++)
-	{
-        setwobble(wobble_pattern_3[ls]);
-        delay(_delay);
-    }
-  }
-  if(dir==CCW)
-  {
-    for (ls = __max_led; ls >= 0; ls--)
-	{
-        setwobble(wobble_pattern_3[ls]);
-        delay(_delay);
-    }
-  }
 }
 
 // -----------------------Function setup_timer2_ovf-------------------------------//

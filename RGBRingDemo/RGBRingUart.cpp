@@ -7,6 +7,12 @@
 
 #include "RGBRingUart.h"
 
+
+
+#ifndef BAUD_RATE
+#define BAUD_RATE      19200
+#endif
+
 uint8_t ReceivePtr;
 uint8_t rx_buf[RX_SIZE];
 uint8_t Command_Length;
