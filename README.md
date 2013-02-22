@@ -42,6 +42,8 @@ This directory contains the original code that works only on the Arduino 0022 pl
 
 ## optiboot-RGBRing
 
+**current status: Code is merged and compiles but flashing of bootloader is not complete.**
+
 The RGB Ring uses a customized version of the optiboot loader. The customizations modify the pins used to flash 
 the LED during the booloader stage. This directory contains the version of optiboot shipped with Arduino 1.0.3
 with the customized changes. 
@@ -56,6 +58,28 @@ There are 4 methods you can use to flash a bootloader onto the atmega168:
 
 The serial interface requires that an existing bootloader of the correct protocol already exists on the chip. The 
 methods that use the 6-pin ISP interface don't require a bootloader.
+
+The program that does flashing is called **avrdude** and can be invoked on the command line or by the Arduino IDE. 
+When it communicates with the atmega168 it can use a number of protocols. The state of development regarding the 
+protocols is currently a mess and you can find quite a number of questions on the message boards.
+
+1. **stk500v1:** This is a protocol originally used by an older Amtel board that is supported by Auduino and the 
+optiboot loader. It is the correct protocol to use in Arduino 0022 (avrdude v5.4) but if you attempt
+to use this in Arduino 1.0.3 (avrdude 5.11) you will get a timeout error because it does not reset the port.
+Unfortunately Arduino 1.0.3 uses it by default.
+2. **stk500v2:** This is a newer protocol required by the Amtel Studio 6.0 IDE. If the Amtel IDE detects a v1 protocol on 
+the AVR chip it will prompt the user to upgrade firmware after which the v1 protocol will no longer work. 
+3. **arduino**: This is additional protocol available in avrdude 5.11 to deal with the timeout issue in stk500v1 and 
+with the exception of a port reset it is essentially the same. This is the correct protocol to use with Arduino 
+1.0.3 (avrdude 5.11). 
+
+To summarize, with Arduino 0022 you should use stk500v1 and with Arduino 1.0.3 you should use arduino. You can configure 
+the Arduino IDE to use the arduino protocol but unfortunately it still does not work (at least on Windows) because
+of the way it formats the port string. The only other option is to invoke avrdude manually or from a Makefile.
+
+A bootloader can be difficult to deal with even without all these issues conspiring against us. One objective of this 
+project is to produce a tested and clearly documented process for flashing the Ring board with its customized 
+bootloader.
 
 
 
