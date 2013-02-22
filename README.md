@@ -9,7 +9,7 @@ and has a ring of 12 color RGB LED's that are independently addressible. More in
 
 ![alt text][board]
 
-[1]: http://www.dfrobot.com/wiki/index.php?title=Rainbow_Ring_V3_(SKU:DFR0141
+[1]: http://www.dfrobot.com/wiki/index.php?title=Rainbow_Ring_V3_(SKU:DFR0141)
 [2]: http://www.dfrobot.com/index.php?route=product/product&filter_name=rainbow&product_id=487#.USZMfKUVf9w
 [board]: http://www.dfrobot.com/wiki/images/thumb/0/06/IMGP4358.jpg/350px-IMGP4358.jpg
 
