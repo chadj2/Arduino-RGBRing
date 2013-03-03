@@ -14,7 +14,7 @@ rgbring.bootloader.file=optiboot_atmega168.hex
 rgbring.bootloader.unlock_bits=0x3F
 rgbring.bootloader.lock_bits=0x0F
 
-rgbring.build.mcu=atmega168
+rgbring.build.mcu=atmega168p
 rgbring.build.f_cpu=16000000L
 rgbring.build.core=arduino
 rgbring.build.variant=standard

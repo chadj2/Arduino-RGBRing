@@ -5,6 +5,7 @@
 //////////////////////////////////////////////////////////////////////////////
 
 #include "RGBRingTimer.h"
+#include <avr/io.h>
 
 // 8 bit CTR
 #define __TIMER1_MAX 0xFF    
@@ -15,31 +16,31 @@
 uint16_t    wobble = 0x0FFF;
 
 // Starting from the D10,Clockwise
-#define LED0 PB4
-#define LED1 PB3
-#define LED2 PB2
-#define LED3 PB1
-#define LED4 PB0
-#define LED5 PB5
+#define LED0 PINB4
+#define LED1 PINB3
+#define LED2 PINB2
+#define LED3 PINB1
+#define LED4 PINB0
+#define LED5 PINB5
 
 #define NEW_LED
 
 #if defined NEW_LED
-  #define RED_A     PC1
-  #define GREEN_A PC0
-  #define BLUE_A     PC2
+  #define RED_A     PINC1
+  #define GREEN_A PINC0
+  #define BLUE_A     PINC2
 
-  #define RED_B     PD5
-  #define GREEN_B PD6
-  #define BLUE_B     PD7
+  #define RED_B     PIND5
+  #define GREEN_B PIND6
+  #define BLUE_B     PIND7
 #elif
-  #define RED_A     PC1
-  #define GREEN_A PC2
-  #define BLUE_A     PC0
+  #define RED_A     PINC1
+  #define GREEN_A PINC2
+  #define BLUE_A     PINC0
 
-  #define RED_B     PD5
-  #define GREEN_B PD7
-  #define BLUE_B     PD6
+  #define RED_B     PIND5
+  #define GREEN_B PIND7
+  #define BLUE_B     PIND6
 #endif
 
 #define ALLLED  	((1<<LED0)|(1<<LED1)|(1<<LED2)|(1<<LED3)|(1<<LED4)|(1<<LED5))
@@ -62,6 +63,15 @@ uint8_t     arrange[6] = {
 	(1<<LED4), 
 	(1<<LED5) };
 
+
+// uint8_t arrange[6] = {
+ // (1<<4),
+ // (1<<3),
+ // (1<<2),
+ // (1<<1),
+ // (1<<0),
+ // (1<<5) };
+	
 	
 void setup_timer2_ovf (void);
 
