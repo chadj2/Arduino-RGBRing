@@ -1,11 +1,13 @@
 ##############################################################
+# Note: Append this text to the boards.txt file included with 
+# Arduino 1.0.3. 
+# (e.g. arduino-1.0.3\hardware\arduino\boards.txt)
+# 
 
 rgbring.name= RGB Ring w/ ATmega168
-
 rgbring.upload.protocol=arduino
 rgbring.upload.maximum_size=15360
 rgbring.upload.speed=115200
-
 rgbring.bootloader.low_fuses=0xff
 rgbring.bootloader.high_fuses=0xdd
 rgbring.bootloader.extended_fuses=0x02
@@ -13,7 +15,6 @@ rgbring.bootloader.path=optiboot-RGBRing
 rgbring.bootloader.file=optiboot_atmega168.hex
 rgbring.bootloader.unlock_bits=0x3F
 rgbring.bootloader.lock_bits=0x0F
-
 rgbring.build.mcu=atmega168p
 rgbring.build.f_cpu=16000000L
 rgbring.build.core=arduino
