@@ -31,12 +31,13 @@ PROGRAM    = optiboot
 
 
 # enter the parameters for the avrdude isp tool
-ISPTOOL	   = stk500v2
+ENV = predefined
+ISPTOOL	   = usbtiny
 ISPPORT	   = usb
-ISPSPEED   = -b 115200
-
-MCU_TARGET = atmega168
+ISPSPEED   = -B1 
+MCU_TARGET = atmega168p
 LDSECTIONS  = -Wl,--section-start=.text=0x3e00 -Wl,--section-start=.version=0x3ffe
+TOOLROOT = D:\cjuliano\Documents\Projects\Audrino\arduino-1.0.3\hardware\tools
 
 # Build environments
 # Start of some ugly makefile-isms to allow optiboot to be built
@@ -47,38 +48,36 @@ LDSECTIONS  = -Wl,--section-start=.text=0x3e00 -Wl,--section-start=.version=0x3f
 fixpath = $(1)
 
 ifeq ($(ENV), arduino)
-# For Arduino, we assume that we're connected to the optiboot directory
-# included with the arduino distribution, which means that the full set
-# of avr-tools are "right up there" in standard places.
-TOOLROOT = ../../../tools
-GCCROOT = $(TOOLROOT)/avr/bin/
-AVRDUDE_CONF = -C$(TOOLROOT)/avr/etc/avrdude.conf
-
-ifeq ($(OS), windows)
-# On windows, SOME of the tool paths will need to have backslashes instead
-# of forward slashes (because they use windows cmd.exe for execution instead
-# of a unix/mingw shell?)  We also have to ensure that a consistent shell
-# is used even if a unix shell is installed (ie as part of WINAVR)
-fixpath = $(subst /,\,$1)
-SHELL = cmd.exe
-endif
-
+	# For Arduino, we assume that we're connected to the optiboot directory
+	# included with the arduino distribution, which means that the full set
+	# of avr-tools are "right up there" in standard places.
+	TOOLROOT = ../../../tools
+	GCCROOT = $(TOOLROOT)/avr/bin/
+	AVRDUDE_CONF = -C$(TOOLROOT)/avr/etc/avrdude.conf
+	ifeq ($(OS), Windows_NT)
+		# On windows, SOME of the tool paths will need to have backslashes instead
+		# of forward slashes (because they use windows cmd.exe for execution instead
+		# of a unix/mingw shell?)  We also have to ensure that a consistent shell
+		# is used even if a unix shell is installed (ie as part of WINAVR)
+		fixpath = $(subst /,\,$1)
+		SHELL = cmd.exe
+	endif
 else ifeq ($(ENV), arduinodev)
-# Arduino IDE source code environment.  Use the unpacked compilers created
-# by the build (you'll need to do "ant build" first.)
-ifeq ($(OS), macosx)
-TOOLROOT = ../../../../build/macosx/work/Arduino.app/Contents/Resources/Java/hardware/tools
-endif
-ifeq ($(OS), windows)
-TOOLROOT = ../../../../build/windows/work/hardware/tools
-endif
-
-GCCROOT = $(TOOLROOT)/avr/bin/
-AVRDUDE_CONF = -C$(TOOLROOT)/avr/etc/avrdude.conf
-
+	# Arduino IDE source code environment.  Use the unpacked compilers created
+	# by the build (you'll need to do "ant build" first.)
+	ifeq ($(OS), macosx)
+		TOOLROOT = ../../../../build/macosx/work/Arduino.app/Contents/Resources/Java/hardware/tools
+	endif
+	ifeq ($(OS), Windows_NT)
+		TOOLROOT = ../../../../build/windows/work/hardware/tools
+	endif
+	GCCROOT = $(TOOLROOT)/avr/bin/
+	AVRDUDE_CONF = -C$(TOOLROOT)/avr/etc/avrdude.conf
+else ifeq ($(ENV), predefined)
+	AVRDUDE_CONF = -C$(TOOLROOT)/avr/etc/avrdude.conf
 else
-GCCROOT =
-AVRDUDE_CONF =
+	GCCROOT =
+	AVRDUDE_CONF =
 endif
 #
 # End of build environment code.
@@ -125,6 +124,8 @@ OBJCOPY        = $(GCCROOT)avr-objcopy
 OBJDUMP        = $(call fixpath,$(GCCROOT)avr-objdump)
 
 SIZE           = $(GCCROOT)avr-size
+
+default: atmega168
 
 # Test platforms
 # Virtual boot block test
