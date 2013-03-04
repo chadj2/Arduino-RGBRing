@@ -40,6 +40,8 @@ int val1 = 0;     // variable to store the read value
 int val2 = 0;
 int turn = 0;
 
+void receiveEvent(int howMany);
+
 void setup()
 {
 #ifdef UART
