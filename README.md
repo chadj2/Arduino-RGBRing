@@ -42,7 +42,7 @@ This directory contains the original code that works only on the Arduino 0022 pl
 
 ## optiboot-RGBRing
 
-**current status: Code is merged and compiles but flashing of bootloader is not complete.**
+**current status: Optiboot is uploading via the usbtiny programmer but the code is not yet merged.**
 
 The RGB Ring uses a customized version of the optiboot loader. The customizations modify the pins used to flash 
 the LED during the booloader stage. This directory contains the version of optiboot shipped with Arduino 1.0.3
