@@ -39,6 +39,7 @@
 									<listOptionValue builtIn="false" value="USB_PID"/>
 									<listOptionValue builtIn="false" value="ARDUINO=103"/>
 								</option>
+								<option id="de.innot.avreclipse.compiler.option.debug.type.401055391" superClass="de.innot.avreclipse.compiler.option.debug.type" value="de.innot.avreclipse.compiler.option.debug.level.dwarf-2" valueType="enumerated"/>
 								<inputType id="de.innot.avreclipse.compiler.winavr.input.518439342" name="C Source Files" superClass="de.innot.avreclipse.compiler.winavr.input"/>
 							</tool>
 							<tool id="de.innot.avreclipse.tool.cppcompiler.lib.release.567140421" name="AVR C++ Compiler" superClass="de.innot.avreclipse.tool.cppcompiler.lib.release">
@@ -57,6 +58,7 @@
 									<listOptionValue builtIn="false" value="USB_PID"/>
 									<listOptionValue builtIn="false" value="ARDUINO=103"/>
 								</option>
+								<option id="de.innot.avreclipse.cppcompiler.option.debug.type.1082686900" superClass="de.innot.avreclipse.cppcompiler.option.debug.type" value="de.innot.avreclipse.cppcompiler.option.debug.level.dwarf-2" valueType="enumerated"/>
 								<inputType id="de.innot.avreclipse.cppcompiler.input.1947155667" superClass="de.innot.avreclipse.cppcompiler.input"/>
 							</tool>
 							<tool id="de.innot.avreclipse.tool.linker.winavr.base.1482915278" name="AVR C Linker" superClass="de.innot.avreclipse.tool.linker.winavr.base"/>
