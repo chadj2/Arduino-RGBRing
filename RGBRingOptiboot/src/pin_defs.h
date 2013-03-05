@@ -1,10 +1,12 @@
-#if defined(__AVR_ATmega168__) || defined(__AVR_ATmega328P__) || defined(__AVR_ATmega88) || defined(__AVR_ATmega8__) || defined(__AVR_ATmega88__)
+#if defined(__AVR_ATmega168__) || defined(__AVR_ATmega168P__) || defined(__AVR_ATmega328P__) || defined(__AVR_ATmega88) || defined(__AVR_ATmega8__) || defined(__AVR_ATmega88__)
 /* Onboard LED is connected to pin PB5 in Arduino NG, Diecimila, and Duemilanove */ 
 #define LED_DDR     DDRB
 #define LED_PORT    PORTB
 #define LED_PIN     PINB
-// --------------------Ring LED
+
 //#define LED         PINB5
+
+// --------------------Ring LED
 #define LED         PINB4	//(1<<PINB4) | (1<<PINB1) _BV(LED)
 #define RGBLED      0X07
 // ====================Ring LED

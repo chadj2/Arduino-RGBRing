@@ -228,7 +228,7 @@ void uartDelay() __attribute__ ((naked));
 #endif
 void appStart() __attribute__ ((naked));
 
-#if defined(__AVR_ATmega168__)
+#if defined(__AVR_ATmega168__) || defined(__AVR_ATmega168P__)
 #define RAMSTART (0x100)
 #define NRWWSTART (0x3800)
 #elif defined(__AVR_ATmega328P__)
@@ -315,10 +315,10 @@ int main(void) {
   
 // --------------------Ring LED
   //DDRD |= 0XE0;// PD5 PC6 PC7 OUTPU
-  /*
-  PORTD&=0X1F; // PD5 PC6 PC7  LOW
-  DDRC=(PORTC |= RGBLED); // PC0 PC1 PC2  HIGH
-  */
+
+//  PORTD&=0X1F; // PD5 PC6 PC7  LOW
+//  DDRC=(PORTC |= RGBLED); // PC0 PC1 PC2  HIGH
+
 // ====================Ring LED
 
 #ifdef SOFT_UART
