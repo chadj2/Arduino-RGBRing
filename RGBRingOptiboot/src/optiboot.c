@@ -638,8 +638,9 @@ void verifySpace() {
 #if LED_START_FLASHES > 0
 void flash_led(uint8_t count) {
   do {
-    TCNT1 = -(F_CPU/(1024*16));
+    TCNT1 = (F_CPU/(1024*16));
     TIFR1 = _BV(TOV1);
+
     while(!(TIFR1 & _BV(TOV1)));
 #ifdef __AVR_ATmega8__
     LED_PORT ^= _BV(LED);
