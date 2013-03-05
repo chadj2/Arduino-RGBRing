@@ -23,6 +23,10 @@ Changes made from the demo include
 * Migration of Arduino platform from v0022 to v1.0.3.
 * Correction of compiler errors and warnings.
 * Splitting of code into separate cpp files which makes it easier to understand.
+* Converted RGB Demo to Eclipse IDE C++ project. 
+* Setup Eclipse project to build Arduino core library.
+* Setup Eclipse project for optiboot.
+* Added suppport for USBtiny programmer to optiboot and RGBDemo.
  
 Code was moved from old to new files as follows:
 ```
