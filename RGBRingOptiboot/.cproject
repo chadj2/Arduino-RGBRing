@@ -39,6 +39,7 @@
 								<option id="de.innot.avreclipse.compiler.option.def.1291527383" name="Define Syms (-D)" superClass="de.innot.avreclipse.compiler.option.def" valueType="definedSymbols">
 									<listOptionValue builtIn="false" value="LED_START_FLASHES=3"/>
 									<listOptionValue builtIn="false" value="BAUD_RATE=115200"/>
+									<listOptionValue builtIn="false" value="LED_DATA_FLASH"/>
 								</option>
 								<option id="de.innot.avreclipse.compiler.option.std.1858166959" name="Language Standard" superClass="de.innot.avreclipse.compiler.option.std" value="de.innot.avreclipse.compiler.option.std.default" valueType="enumerated"/>
 								<option id="de.innot.avreclipse.compiler.option.debug.type.834202256" name="Debug Info Format" superClass="de.innot.avreclipse.compiler.option.debug.type" value="de.innot.avreclipse.compiler.option.debug.level.default" valueType="enumerated"/>

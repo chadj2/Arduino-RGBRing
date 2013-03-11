@@ -312,13 +312,13 @@ int main(void)
 	watchdogConfig(WATCHDOG_1S);
 
 	// ==================== Ring LED
-	// color port A
-	CDDR_A = (CPORT_A |= ALED); // PC0 PC1 PC2  HIGH
-	CPORT_A &= ALED; 	// LED White
+	// Init LED color port A to off
+	CDDR_A = (CPORT_A |= ALED);
+	CPORT_A &= ~ALED;
 
-	// color port B
-	CDDR_B = (CPORT_B |= BLED); // PC0 PC1 PC2  HIGH
-	CPORT_B &= BLED; // PD5 PC6 PC7  LOW
+	// Init LED color port A to red
+	CDDR_B = (CPORT_B |= BLED);
+	CPORT_B &= ~ALED & _BV(BLUE_B);
 	// ==================== Ring LED
 
 	/* Set LED pin as output */
@@ -329,10 +329,12 @@ int main(void)
 	UART_DDR |= _BV(UART_TX_BIT);
 #endif
 
+
 #if LED_START_FLASHES > 0
 	/* Flash onboard LED to signal entering of bootloader */
 	flash_led(LED_START_FLASHES * 2);
 #endif
+
 
 	/* Forever loop */
 	for (;;)
@@ -397,6 +399,12 @@ int main(void)
 		/* Write memory, length is big endian and is in bytes */
 		else if (ch == STK_PROG_PAGE)
 		{
+			// ==================== Ring LED
+			// Init LED color port A to blue
+			CDDR_B = (CPORT_B |= BLED);
+			CPORT_B &= ~ALED & _BV(RED_B);
+			// ==================== Ring LED
+
 			// PROGRAM PAGE - we support flash programming only, not EEPROM
 			uint8_t *bufPtr;
 			uint16_t addrPtr;
@@ -473,6 +481,12 @@ int main(void)
 		/* Read memory block mode, length is big endian.  */
 		else if (ch == STK_READ_PAGE)
 		{
+			// ==================== Ring LED
+			// Init LED color port A to blue
+			CDDR_B = (CPORT_B |= BLED);
+			CPORT_B &= ~ALED & _BV(BLUE_B);
+			// ==================== Ring LED
+
 			// READ PAGE - we only read flash
 			getch(); /* getlen() */
 			length = getch();
@@ -682,8 +696,7 @@ void flash_led(uint8_t count)
 		TCNT1 = (uint16_t)(-(F_CPU/(1024*16)));
 		TIFR1 = _BV(TOV1);
 
-		while (!(TIFR1 & _BV(TOV1)))
-			;
+		while (!(TIFR1 & _BV(TOV1)));
 
 #ifdef __AVR_ATmega8__
 		LED_PORT ^= _BV(LED);

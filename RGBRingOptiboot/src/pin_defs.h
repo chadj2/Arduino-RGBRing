@@ -33,7 +33,7 @@
 #define CDDR_B    	DDRD
 #define CPORT_B    	PORTD
 
-#define LED         LED0
+#define LED         LED1
 
 ////////////////////////////// End Ring LED
 
