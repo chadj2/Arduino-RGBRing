@@ -256,6 +256,21 @@ void appStart() __attribute__ ((naked));
 #define wdtVect (*(uint16_t*)(RAMSTART+SPM_PAGESIZE*2+6))
 #endif
 
+#ifdef RLED_RING
+void setColor(uint8_t color)
+{
+	CDDR_B = (CPORT_B |= BLED);
+	//CDDR_B = BLED;
+	CPORT_B &= ~BLED | _BV(color);
+}
+
+/*
+#define setColor(_COLOR) \
+	CDDR_B = (CPORT_B |= BLED); \
+	CPORT_B &= ~BLED | _BV(_COLOR);
+*/
+#endif
+
 /* main program starts here */
 int main(void)
 {
@@ -278,63 +293,58 @@ int main(void)
 	//  r1 contains zero
 	//
 	// If not, uncomment the following instructions:
-	// cli();
+	//asm volatile ("cli");
 	asm volatile ("clr __zero_reg__");
+
 #ifdef __AVR_ATmega8__
 	SP=RAMEND;  // This is done by hardware reset
-#endif
-
-	// Adaboot no-wait mod
-	ch = MCUSR;
-	MCUSR = 0;
-	if (!(ch & _BV(EXTRF)))
-		appStart();
-
-#if LED_START_FLASHES > 0
-	// Set up Timer 1 for timeout counter
-	TCCR1B = _BV(CS12) | _BV(CS10); // div 1024
-#endif
-#ifndef SOFT_UART
-#ifdef __AVR_ATmega8__
-	UCSRA = _BV(U2X); //Double speed mode USART
-	UCSRB = _BV(RXEN) | _BV(TXEN);// enable Rx & Tx
-	UCSRC = _BV(URSEL) | _BV(UCSZ1) | _BV(UCSZ0);// config USART; 8N1
-	UBRRL = (uint8_t)( (F_CPU + BAUD_RATE * 4L) / (BAUD_RATE * 8L) - 1 );
-#else
-	UCSR0A = _BV(U2X0); //Double speed mode USART0
-	UCSR0B = _BV(RXEN0) | _BV(TXEN0);
-	UCSR0C = _BV(UCSZ00) | _BV(UCSZ01);
-	UBRR0L = (uint8_t) ((F_CPU + BAUD_RATE * 4L) / (BAUD_RATE * 8L) - 1);
-#endif
 #endif
 
 	// Set up watchdog to trigger after 500ms
 	watchdogConfig(WATCHDOG_1S);
 
-	// ==================== Ring LED
-	// Init LED color port A to off
-	CDDR_A = (CPORT_A |= ALED);
-	CPORT_A &= ~ALED;
-
-	// Init LED color port A to red
-	CDDR_B = (CPORT_B |= BLED);
-	CPORT_B &= ~ALED & _BV(BLUE_B);
-	// ==================== Ring LED
+#ifdef RLED_RING
+	setColor(BLUE_B);
+#endif
 
 	/* Set LED pin as output */
 	LED_DDR |= _BV(LED);
+
+#if LED_START_FLASHES > 0
+	// Set up Timer 1 for timeout counter
+	TCCR1B = _BV(CS12) | _BV(CS10); // div 1024
+
+	/* Flash onboard LED to signal entering of bootloader */
+	flash_led(LED_START_FLASHES * 2);
+#endif
+
+	// Adaboot no-wait mod
+	// start application if no external reset
+	ch = MCUSR;
+	MCUSR = 0;
+	if (!(ch & _BV(EXTRF)))
+	{
+		appStart();
+	}
+
+#ifndef SOFT_UART
+	#ifdef __AVR_ATmega8__
+		UCSRA = _BV(U2X); //Double speed mode USART
+		UCSRB = _BV(RXEN) | _BV(TXEN);// enable Rx & Tx
+		UCSRC = _BV(URSEL) | _BV(UCSZ1) | _BV(UCSZ0);// config USART; 8N1
+		UBRRL = (uint8_t)( (F_CPU + BAUD_RATE * 4L) / (BAUD_RATE * 8L) - 1 );
+	#else
+		UCSR0A = _BV(U2X0); //Double speed mode USART0
+		UCSR0B = _BV(RXEN0) | _BV(TXEN0);
+		UCSR0C = _BV(UCSZ00) | _BV(UCSZ01);
+		UBRR0L = (uint8_t) ((F_CPU + BAUD_RATE * 4L) / (BAUD_RATE * 8L) - 1);
+	#endif
+#endif
 
 #ifdef SOFT_UART
 	/* Set TX pin as output */
 	UART_DDR |= _BV(UART_TX_BIT);
 #endif
-
-
-#if LED_START_FLASHES > 0
-	/* Flash onboard LED to signal entering of bootloader */
-	flash_led(LED_START_FLASHES * 2);
-#endif
-
 
 	/* Forever loop */
 	for (;;)
@@ -399,12 +409,9 @@ int main(void)
 		/* Write memory, length is big endian and is in bytes */
 		else if (ch == STK_PROG_PAGE)
 		{
-			// ==================== Ring LED
-			// Init LED color port A to blue
-			CDDR_B = (CPORT_B |= BLED);
-			CPORT_B &= ~ALED & _BV(RED_B);
-			// ==================== Ring LED
-
+#ifdef RLED_RING
+			setColor(RED_B);
+#endif
 			// PROGRAM PAGE - we support flash programming only, not EEPROM
 			uint8_t *bufPtr;
 			uint16_t addrPtr;
@@ -481,12 +488,9 @@ int main(void)
 		/* Read memory block mode, length is big endian.  */
 		else if (ch == STK_READ_PAGE)
 		{
-			// ==================== Ring LED
-			// Init LED color port A to blue
-			CDDR_B = (CPORT_B |= BLED);
-			CPORT_B &= ~ALED & _BV(BLUE_B);
-			// ==================== Ring LED
-
+#ifdef RLED_RING
+			setColor(GREEN_B);
+#endif
 			// READ PAGE - we only read flash
 			getch(); /* getlen() */
 			length = getch();
@@ -692,7 +696,7 @@ void flash_led(uint8_t count)
 {
 	do
 	{
-		// F_CPU could be 16000000UL or 16000000L and we need to handle both cases.
+		// F_CPU could be 16000000UL (as in Eclipse) or 16000000L and we need to handle both cases.
 		TCNT1 = (uint16_t)(-(F_CPU/(1024*16)));
 		TIFR1 = _BV(TOV1);
 
@@ -718,6 +722,8 @@ void watchdogReset()
 
 void watchdogConfig(uint8_t x)
 {
+	// WDCE: watchdog change enable
+	// WDE: Watchdog system reset enable
 	WDTCSR = _BV(WDCE) | _BV(WDE);
 	WDTCSR = x;
 }

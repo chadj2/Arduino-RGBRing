@@ -37,7 +37,8 @@
 								<option id="de.innot.avreclipse.compiler.option.language.uchar.1459504604" name="char is unsigned (-funsigned-char)" superClass="de.innot.avreclipse.compiler.option.language.uchar" value="false" valueType="boolean"/>
 								<option id="de.innot.avreclipse.compiler.option.language.ubitfields.252922952" name="bitfields are unsigned (-funsigned-bitfields)" superClass="de.innot.avreclipse.compiler.option.language.ubitfields" value="false" valueType="boolean"/>
 								<option id="de.innot.avreclipse.compiler.option.def.1291527383" name="Define Syms (-D)" superClass="de.innot.avreclipse.compiler.option.def" valueType="definedSymbols">
-									<listOptionValue builtIn="false" value="LED_START_FLASHES=3"/>
+									<listOptionValue builtIn="false" value="LED_START_FLASHES=1"/>
+									<listOptionValue builtIn="false" value="RLED_RING"/>
 									<listOptionValue builtIn="false" value="BAUD_RATE=115200"/>
 									<listOptionValue builtIn="false" value="LED_DATA_FLASH"/>
 								</option>
