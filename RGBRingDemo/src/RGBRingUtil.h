@@ -23,9 +23,9 @@ enum DIRECTION_t {
     CCW
 };
 
-extern uint16_t wobble_pattern_1[__leds];
-extern uint16_t wobble_pattern_2[__leds];
-extern uint16_t wobble_pattern_3[__leds];
+extern uint16_t wobble_pattern_1[RR_LEDS];
+extern uint16_t wobble_pattern_2[RR_LEDS];
+extern uint16_t wobble_pattern_3[RR_LEDS];
 
 void random_leds (void);
 void fader (void);

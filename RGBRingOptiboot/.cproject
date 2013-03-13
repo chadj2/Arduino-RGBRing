@@ -45,6 +45,9 @@
 								<option id="de.innot.avreclipse.compiler.option.std.1858166959" name="Language Standard" superClass="de.innot.avreclipse.compiler.option.std" value="de.innot.avreclipse.compiler.option.std.default" valueType="enumerated"/>
 								<option id="de.innot.avreclipse.compiler.option.debug.type.834202256" name="Debug Info Format" superClass="de.innot.avreclipse.compiler.option.debug.type" value="de.innot.avreclipse.compiler.option.debug.level.default" valueType="enumerated"/>
 								<option id="de.innot.avreclipse.compiler.option.verbose.1953658523" name="Verbose (-v)" superClass="de.innot.avreclipse.compiler.option.verbose" value="false" valueType="boolean"/>
+								<option id="de.innot.avreclipse.compiler.option.incpath.1217637503" name="Include Paths (-I)" superClass="de.innot.avreclipse.compiler.option.incpath" valueType="includePath">
+									<listOptionValue builtIn="false" value="&quot;${workspace_loc:/RGBRingLib/src}&quot;"/>
+								</option>
 								<inputType id="de.innot.avreclipse.compiler.winavr.input.38495375" name="C Source Files" superClass="de.innot.avreclipse.compiler.winavr.input"/>
 							</tool>
 							<tool command="avr-g++" commandLinePattern="${COMMAND} ${FLAGS} ${OUTPUT_FLAG} ${OUTPUT_PREFIX}${OUTPUT} ${INPUTS}" errorParsers="org.eclipse.cdt.core.GCCErrorParser" id="de.innot.avreclipse.tool.cppcompiler.app.release.657044997" name="AVR C++ Compiler" superClass="de.innot.avreclipse.tool.cppcompiler.app.release">

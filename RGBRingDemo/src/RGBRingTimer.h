@@ -6,12 +6,12 @@
 
 #include <Arduino.h>
 
-#define __leds 		12
-#define __max_led 	__leds - 1
-#define __brightness_levels 	64
-#define __max_brightness 		__brightness_levels-1
+#define RR_LEDS 		12
+#define RR_LED_MAX 	RR_LEDS - 1
+#define RR_LED_BRIGHTNESS_LEVELS 	64
+#define RR_LED_BRIGHTNESS_MAX 		RR_LED_BRIGHTNESS_LEVELS-1
 
-extern uint8_t brightness[3][__leds]; 
+extern uint8_t brightness[3][RR_LEDS]; 
 
 void InitTimer(void);
 void enable_timer2_ovf (void);

@@ -9,19 +9,19 @@
 
 #define __fade__delay_ms  5
 
-uint16_t wobble_pattern_1[__leds] =
+uint16_t wobble_pattern_1[RR_LEDS] =
 { 0b0000000000000001, 0b0000000000000010, 0b0000000000000100,
 		0b0000000000001000, 0b0000000000010000, 0b0000000000100000,
 		0b0000000001000000, 0b0000000010000000, 0b0000000100000000,
 		0b0000001000000000, 0b0000010000000000, 0b0000100000000000 };
 
-uint16_t wobble_pattern_2[__leds] =
+uint16_t wobble_pattern_2[RR_LEDS] =
 { 0b0000000000000001, 0b0000100000000010, 0b0000010000001000,
 		0b0000001000001000, 0b0000000100010000, 0b0000000010100000,
 		0b0000000001000000, 0b0000000010100000, 0b0000000100010000,
 		0b0000001000001000, 0b0000010000000100, 0b0000100000000010 };
 
-uint16_t wobble_pattern_3[__leds] =
+uint16_t wobble_pattern_3[RR_LEDS] =
 { 0b0000000000000001, 0b0000100000000010, 0b0000010000001000,
 		0b0000001000001000, 0b0000000100010000, 0b0000000010100000,
 		0b0000000001000000, 0b0000000010100000, 0b0000000100010000,
@@ -30,7 +30,7 @@ uint16_t wobble_pattern_3[__leds] =
 // -----------------------Function random_leds-------------------------------//
 void random_leds(void)
 {
-	set_led_hsv((uint8_t) (random(__leds)), (uint16_t) (random(360)), 255, 255);
+	set_led_hsv((uint8_t) (random(RR_LEDS)), (uint16_t) (random(360)), 255, 255);
 }
 
 // -----------------------Function fader-------------------------------//
@@ -38,12 +38,12 @@ void fader(void)
 { /* fade the matrix form BLACK to WHITE and back */
 	uint8_t ctr1;
 	//uint8_t led;
-	for (ctr1 = 0; ctr1 <= __max_brightness; ctr1++)
+	for (ctr1 = 0; ctr1 <= RR_LED_BRIGHTNESS_MAX; ctr1++)
 	{
 		set_all_rgb(ctr1, ctr1, ctr1);
 		delay(__fade__delay_ms);
 	}
-	for (ctr1 = __max_brightness; (ctr1 >= 0) & (ctr1 != 255); ctr1--)
+	for (ctr1 = RR_LED_BRIGHTNESS_MAX; (ctr1 >= 0) & (ctr1 != 255); ctr1--)
 	{
 		set_all_rgb(ctr1, ctr1, ctr1);
 		delay(__fade__delay_ms);
@@ -66,7 +66,7 @@ void color_wave(uint8_t width)
 {
 	uint8_t led;
 	static uint16_t shift = 0;
-	for (led = 0; led <= __max_led; led++)
+	for (led = 0; led <= RR_LED_MAX; led++)
 	{
 		set_led_hsv(led, (uint16_t) (led) * (uint16_t) (width) + shift, 255,
 				255);
@@ -80,10 +80,10 @@ void sequence(void)
 	uint8_t led;
 	static uint16_t shift = 0;
 	uint8_t ls = 0;
-	for (ls = 0; ls <= __max_led; ls++)
+	for (ls = 0; ls <= RR_LED_MAX; ls++)
 	{
 		disable_timer2_ovf();
-		for (led = 0; led <= __max_led; led++)
+		for (led = 0; led <= RR_LED_MAX; led++)
 		{
 			if (wobble_pattern_1[ls] & (0x0001 << led))
 			{
@@ -105,9 +105,9 @@ void sequence(void)
  uint8_t led;
  static uint16_t shift = 0;
  uint8_t ls = 0;
- for (ls = 0; ls <= __max_led; ls++)    {
- for (led = 0; led <= __max_led; led++)    {
- if(wobble_pattern_2[__max_led-ls] & (0x0001<< led)){
+ for (ls = 0; ls <= RR_LED_MAX; ls++)    {
+ for (led = 0; led <= RR_LED_MAX; led++)    {
+ if(wobble_pattern_2[RR_LED_MAX-ls] & (0x0001<< led)){
  set_led_hsv (led, (uint16_t)(led) * (uint16_t)(ls) * shift, 255, 255);
  shift++;
  }else{
@@ -126,7 +126,7 @@ void turnover(uint8_t rgb, uint8_t dir)
 	if (dir == CCW)
 	{
 		temp = brightness[rgb][0];
-		for (led = 0; led < __max_led; led++)
+		for (led = 0; led < RR_LED_MAX; led++)
 		{
 			brightness[rgb][led] = brightness[rgb][led + 1];
 		}
@@ -134,8 +134,8 @@ void turnover(uint8_t rgb, uint8_t dir)
 	}
 	if (dir == CW)
 	{
-		temp = brightness[rgb][__max_led];
-		for (led = __max_led; led > 0; led--)
+		temp = brightness[rgb][RR_LED_MAX];
+		for (led = RR_LED_MAX; led > 0; led--)
 		{
 			brightness[rgb][led] = brightness[rgb][led - 1];
 		}
@@ -181,7 +181,7 @@ void rotate(uint8_t color, uint8_t dir)
 void set_all_hsv(uint16_t hue, uint8_t sat, uint8_t val)
 {
 	uint8_t led;
-	for (led = 0; led <= __max_led; led++)
+	for (led = 0; led <= RR_LED_MAX; led++)
 	{
 		set_led_hsv(led, hue, sat, val);
 	}
@@ -190,7 +190,7 @@ void set_all_hsv(uint16_t hue, uint8_t sat, uint8_t val)
 void set_all_byte_hsv(uint8_t data_byte, uint16_t hue, uint8_t sat, uint8_t val)
 {
 	uint8_t led;
-	for (led = 0; led <= __max_led; led++)
+	for (led = 0; led <= RR_LED_MAX; led++)
 	{
 		if ((data_byte >> led) & (B00000001))
 		{
@@ -267,7 +267,7 @@ void set_led_hsv(uint8_t led, uint16_t hue, uint8_t sat, uint8_t val)
 		B = d;
 	}
 
-	uint16_t scale_factor = mmd / __max_brightness;
+	uint16_t scale_factor = mmd / RR_LED_BRIGHTNESS_MAX;
 
 	R = (uint8_t) (R / scale_factor);
 	G = (uint8_t) (G / scale_factor);
@@ -283,7 +283,7 @@ void swaywobble(uint8_t _delay, uint8_t dir)
 
 	if (dir == CW)
 	{
-		for (ls = 0; ls <= __max_led; ls++)
+		for (ls = 0; ls <= RR_LED_MAX; ls++)
 		{
 			setwobble(wobble_pattern_3[ls]);
 			delay(_delay);
@@ -291,7 +291,7 @@ void swaywobble(uint8_t _delay, uint8_t dir)
 	}
 	if (dir == CCW)
 	{
-		for (ls = __max_led; ls >= 0; ls--)
+		for (ls = RR_LED_MAX; ls >= 0; ls--)
 		{
 			setwobble(wobble_pattern_3[ls]);
 			delay(_delay);

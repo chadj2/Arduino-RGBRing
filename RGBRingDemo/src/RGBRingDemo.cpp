@@ -298,7 +298,7 @@ void serialInput()
 		case 0xF7:    //设置数组
 			uint8_t w;
 
-			for (w = 0; w < __leds; w++)
+			for (w = 0; w < RR_LEDS; w++)
 				wobble_pattern_3[w] = (uint16_t) (Command[w * 2 + 1]
 						<< 8 | Command[w * 2 + 2]);
 

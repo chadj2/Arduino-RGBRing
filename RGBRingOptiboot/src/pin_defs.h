@@ -11,30 +11,8 @@
 //#define LED         PINB5
 
 ////////////////////////////// Begin Ring LED
-#define LED0 PINB4
-#define LED1 PINB3
-#define LED2 PINB2
-#define LED3 PINB1
-#define LED4 PINB0
-#define LED5 PINB5
-
-#define RED_A     PINC1
-#define GREEN_A   PINC0
-#define BLUE_A    PINC2
-#define ALED     0x07
-
-#define RED_B     PIND5
-#define GREEN_B   PIND6
-#define BLUE_B    PIND7
-#define BLED     0xE0
-
-#define CDDR_A    	DDRC
-#define CPORT_A    	PORTC
-#define CDDR_B    	DDRD
-#define CPORT_B    	PORTD
-
-#define LED         LED1
-
+#include "RGBRingDefs.h"
+#define LED         RR_SEL_LED1
 ////////////////////////////// End Ring LED
 
 /* Ports for soft UART */

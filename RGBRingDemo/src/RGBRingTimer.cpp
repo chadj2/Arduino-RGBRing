@@ -5,72 +5,22 @@
 //////////////////////////////////////////////////////////////////////////////
 
 #include "RGBRingTimer.h"
+#include "RGBRingDefs.h"
 #include <avr/io.h>
 
 // 8 bit CTR
-#define __TIMER1_MAX 0xFF    
+#define RR_TIMER1_MAX 0xFF
 
-// this may have to be adjusted if "__brightness_levels" is changed too much
-#define __TIMER1_CNT 0x30   
+// this may have to be adjusted if "RR_LED_BRIGHTNESS_LEVELS" is changed too much
+#define RR_TIMER1_CNT 0x30
 
 uint16_t wobble = 0x0FFF;
 
-// Starting from the D10,Clockwise
-#define LED0 PINB4
-#define LED1 PINB3
-#define LED2 PINB2
-#define LED3 PINB1
-#define LED4 PINB0
-#define LED5 PINB5
-
-#define NEW_LED
-
-//////////////////////////////////////////////////////////////////////////////
-// Pin to LED mapping: Intersection of color port and selector determine
-//   the LED that gets powered on. There are 2 color ports and 6 selectors
-//   for a total of 12 LED's.
-//
-// Color ports (anodes LOW --> OFF)
-//   PORTC(CPORT_A): 0(GREEN_A) 1(RED_A)   2(BLUE_A)
-//   PORTD(CPORT_B): 5(RED_B)   6(GREEN_B) 7(BLUE_B)
-//
-// Selector (cathodes HIGH --> OFF)
-//   PORTB: 0(LED4) 1(LED3) 2(LED2) 3(LED1) 4(LED0) 5(LED5)
-//////////////////////////////////////////////////////////////////////////////
-
-#if defined NEW_LED
-#define RED_A     PINC1
-#define GREEN_A PINC0
-#define BLUE_A     PINC2
-
-#define RED_B     PIND5
-#define GREEN_B PIND6
-#define BLUE_B     PIND7
-#elif
-#define RED_A     PINC1
-#define GREEN_A PINC2
-#define BLUE_A     PINC0
-
-#define RED_B     PIND5
-#define GREEN_B PIND7
-#define BLUE_B     PIND6
-#endif
-
-#define ALLLED  	((1<<LED0)|(1<<LED1)|(1<<LED2)|(1<<LED3)|(1<<LED4)|(1<<LED5))
-
-#define ALED 		((1 << RED_A) | (1 << GREEN_A) | (1 << BLUE_A))
-#define BLED 		((1 << RED_B) | (1 << GREEN_B) | (1 << BLUE_B))
-
-#define CDDR_A    	DDRC
-#define CPORT_A    	PORTC
-#define CDDR_B    	DDRD
-#define CPORT_B    	PORTD
-
 /* memory for RED LEDs */
-uint8_t brightness[3][__leds];
+uint8_t brightness[3][RR_LEDS];
 
 uint8_t arrange[6] =
-{ (1 << LED0), (1 << LED1), (1 << LED2), (1 << LED3), (1 << LED4), (1 << LED5) };
+{ (1 << RR_SEL_LED0), (1 << RR_SEL_LED1), (1 << RR_SEL_LED2), (1 << RR_SEL_LED3), (1 << RR_SEL_LED4), (1 << RR_SEL_LED5) };
 
 void setup_timer2_ovf(void);
 
@@ -78,16 +28,16 @@ void setup_timer2_ovf(void);
 void InitTimer(void)
 {
 	// selector
-	DDRB |= ALLLED;    	// set PORTB as output
-	PORTB &= ~ALLLED; 	// all pins HIGH --> cathodes HIGH --> LEDs off
+	RR_SEL_DDR |= RR_SEL_ALLLED;    	// set PORTB as output
+	RR_SEL_PORT &= ~RR_SEL_ALLLED; 	// all pins HIGH --> cathodes HIGH --> LEDs off
 
 	// color port A
-	CDDR_A |= ALED;    	// set COLORPORT #5-7 as output
-	CPORT_A &= ~ALED; 	// pins #5-7 LOW --> anodes LOW --> LEDs off
+	RR_CPA_DDR |= RR_CPA_WHITE;    	// set COLORPORT #5-7 as output
+	RR_CPA_PORT &= ~RR_CPA_WHITE; 	// pins #5-7 LOW --> anodes LOW --> LEDs off
 
 	// color port B
-	CDDR_B |= BLED;    	// set COLORPORT #5-7 as output
-	CPORT_B &= ~BLED; 	// pins #5-7 LOW --> anodes LOW --> LEDs off
+	RR_CPB_DDR |= RR_CPB_WHITE;    	// set COLORPORT #5-7 as output
+	RR_CPB_PORT &= ~RR_CPB_WHITE; 	// pins #5-7 LOW --> anodes LOW --> LEDs off
 
 	setup_timer2_ovf();
 	enable_timer2_ovf();
@@ -126,21 +76,21 @@ void setup_timer2_ovf(void)
 // -----------------------Function enable_timer2_ovf-------------------------------//
 void enable_timer2_ovf(void)
 {
-	TCNT2 = __TIMER1_MAX - __TIMER1_CNT;
+	TCNT2 = RR_TIMER1_MAX - RR_TIMER1_CNT;
 	TIMSK2 |= (1 << TOIE2);
 }
 
 // -----------------------Function disable_timer2_ovf-------------------------------//
 void disable_timer2_ovf(void)
 {
-	PORTB &= ~ALLLED;
+	RR_SEL_PORT &= ~RR_SEL_ALLLED;
 	TIMSK2 &= ~(1 << TOIE2);
 }
 
 // -----------------------Framebuffer interrupt routine-------------------------------//
 ISR (TIMER2_OVF_vect)
 {
-	TCNT2 = __TIMER1_MAX - __TIMER1_CNT;
+	TCNT2 = RR_TIMER1_MAX - RR_TIMER1_CNT;
 
 	uint8_t cycle;
 	uint8_t led;
@@ -149,7 +99,7 @@ ISR (TIMER2_OVF_vect)
 	uint8_t Btmp;
 	uint16_t tp = 0x0001;
 
-	for (cycle = 0; cycle < __max_brightness; cycle++)
+	for (cycle = 0; cycle < RR_LED_BRIGHTNESS_MAX; cycle++)
 	{
 		tp = 0x0001;
 		led = 0;
@@ -157,23 +107,23 @@ ISR (TIMER2_OVF_vect)
 		for (times = 0; times < 6; times++)
 		{
 			// all relevant anodes LOW --> OFF
-			CPORT_A &= ~ALED;
-			CPORT_B &= ~BLED;
+			RR_CPA_PORT &= ~RR_CPA_WHITE;
+			RR_CPB_PORT &= ~RR_CPB_WHITE;
 
 			// all cathodes HIGH --> OFF
-			PORTB &= ~ALLLED;
+			RR_SEL_PORT &= ~RR_SEL_ALLLED;
 			Atmp = 0;
 			Btmp = 0;
-			PORTB |= arrange[times];
+			RR_SEL_PORT |= arrange[times];
 
 			if (wobble & tp)
 			{
 				if (cycle < brightness[1][led])
-					Atmp |= (1 << GREEN_A);
+					Atmp |= (1 << RR_CPA_GREEN);
 				if (cycle < brightness[2][led])
-					Atmp |= (1 << BLUE_A);
+					Atmp |= (1 << RR_CPA_BLUE);
 				if (cycle < brightness[0][led])
-					Atmp |= (1 << RED_A);
+					Atmp |= (1 << RR_CPA_RED);
 			}
 
 			led++;
@@ -183,27 +133,27 @@ ISR (TIMER2_OVF_vect)
 			if (wobble & tp)
 			{
 				if (cycle < brightness[1][led])
-					Btmp |= (1 << GREEN_B);
+					Btmp |= (1 << RR_CPB_GREEN);
 				if (cycle < brightness[2][led])
-					Btmp |= (1 << BLUE_B);
+					Btmp |= (1 << RR_CPB_BLUE);
 				if (cycle < brightness[0][led])
-					Btmp |= (1 << RED_B);
+					Btmp |= (1 << RR_CPB_RED);
 			}
 
-			CPORT_B |= Btmp;
-			CPORT_A |= Atmp;
+			RR_CPB_PORT |= Btmp;
+			RR_CPA_PORT |= Atmp;
 			asm("nop");
 			led++;
 			tp = tp << 1;
-			//CPORT_B &= ~BLED;
+			//RR_CPB_PORT &= ~RR_CPB_WHITE;
 			//PORTB &=~ ALLLED;
 		}
 	}
 
 	// all relevant anodes LOW --> OFF
-	CPORT_A &= ~ALED;
-	CPORT_B &= ~BLED;
+	RR_CPA_PORT &= ~RR_CPA_WHITE;
+	RR_CPB_PORT &= ~RR_CPB_WHITE;
 
 	// all cathodes HIGH --> OFF
-	PORTB &= ~ALLLED;
+	RR_SEL_PORT &= ~RR_SEL_ALLLED;
 }

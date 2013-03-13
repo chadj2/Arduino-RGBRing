@@ -259,15 +259,15 @@ void appStart() __attribute__ ((naked));
 #ifdef RLED_RING
 void setColor(uint8_t color)
 {
-	CDDR_B = (CPORT_B |= BLED);
-	//CDDR_B = BLED;
-	CPORT_B &= ~BLED | _BV(color);
+	RR_CPB_DDR = (RR_CPB_PORT |= RR_CPB_WHITE);
+	//RR_CPB_DDR = RR_CPB_WHITE;
+	RR_CPB_PORT &= ~RR_CPB_WHITE | _BV(color);
 }
 
 /*
 #define setColor(_COLOR) \
-	CDDR_B = (CPORT_B |= BLED); \
-	CPORT_B &= ~BLED | _BV(_COLOR);
+	RR_CPB_DDR = (RR_CPB_PORT |= RR_CPB_WHITE); \
+	RR_CPB_PORT &= ~RR_CPB_WHITE | _BV(_COLOR);
 */
 #endif
 
@@ -304,7 +304,7 @@ int main(void)
 	watchdogConfig(WATCHDOG_1S);
 
 #ifdef RLED_RING
-	setColor(BLUE_B);
+	setColor(RR_CPB_BLUE);
 #endif
 
 	/* Set LED pin as output */
@@ -410,7 +410,7 @@ int main(void)
 		else if (ch == STK_PROG_PAGE)
 		{
 #ifdef RLED_RING
-			setColor(RED_B);
+			setColor(RR_CPB_RED);
 #endif
 			// PROGRAM PAGE - we support flash programming only, not EEPROM
 			uint8_t *bufPtr;
@@ -489,7 +489,7 @@ int main(void)
 		else if (ch == STK_READ_PAGE)
 		{
 #ifdef RLED_RING
-			setColor(GREEN_B);
+			setColor(RR_CPB_GREEN);
 #endif
 			// READ PAGE - we only read flash
 			getch(); /* getlen() */

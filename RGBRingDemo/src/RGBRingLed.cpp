@@ -15,7 +15,7 @@ void InitLED(void)
 void set_all_rgb(uint8_t red, uint8_t green, uint8_t blue)
 {
 	uint8_t led;
-	for (led = 0; led <= __max_led; led++)
+	for (led = 0; led <= RR_LED_MAX; led++)
 	{
 		set_led_rgb(led, red, green, blue);
 	}
@@ -34,7 +34,7 @@ void set_led_red(uint8_t led, uint8_t red)
 {
 #ifdef DOTCORR
 
-	int8_t dotcorr = (int8_t) (pgm_read_byte (&dotcorr_red[led])) * red / __brightness_levels;
+	int8_t dotcorr = (int8_t) (pgm_read_byte (&dotcorr_red[led])) * red / RR_LED_BRIGHTNESS_LEVELS;
 	uint8_t value;
 
 	if (red + dotcorr < 0)
@@ -53,7 +53,7 @@ void set_led_green(uint8_t led, uint8_t green)
 {
 #ifdef DOTCORR
 
-	int8_t dotcorr = (int8_t) (pgm_read_byte (&dotcorr_green[led])) * green / __brightness_levels;
+	int8_t dotcorr = (int8_t) (pgm_read_byte (&dotcorr_green[led])) * green / RR_LED_BRIGHTNESS_LEVELS;
 	uint8_t value;
 
 	if (green + dotcorr < 0)
@@ -72,7 +72,7 @@ void set_led_green(uint8_t led, uint8_t green)
 void set_led_blue(uint8_t led, uint8_t blue)
 {
 #ifdef DOTCORR
-	int8_t dotcorr = (int8_t) (pgm_read_byte (&dotcorr_blue[led])) * blue / __brightness_levels;
+	int8_t dotcorr = (int8_t) (pgm_read_byte (&dotcorr_blue[led])) * blue / RR_LED_BRIGHTNESS_LEVELS;
 	uint8_t value;
 
 	if (blue + dotcorr < 0)
@@ -89,7 +89,7 @@ void set_led_blue(uint8_t led, uint8_t blue)
 // -----------------------Function set_led_unicolor-------------------------------//
 void set_led_unicolor(uint8_t led, uint8_t rgb, uint8_t var)
 {
-	if (rgb > 2 || led > __max_led)
+	if (rgb > 2 || led > RR_LED_MAX)
 		return;
 	brightness[rgb][led] = var;
 }
@@ -99,7 +99,7 @@ void set_all_unicolor(uint8_t rgb, uint8_t var)
 {
 	uint8_t led;
 //disable_timer2_ovf();
-	for (led = 0; led <= __max_led; led++)
+	for (led = 0; led <= RR_LED_MAX; led++)
 	{
 		set_led_unicolor(led, rgb, var);
 	}

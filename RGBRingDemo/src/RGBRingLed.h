@@ -16,10 +16,10 @@ void set_all_unicolor(uint8_t rgb, uint8_t var);
 
 /* macro definitions for LED control */ 
 #define ALLLEDBLACK()  set_all_rgb( 0,0,0)
-#define ALLLEDRED()  set_all_rgb( __max_brightness,0,0)
-#define ALLLEDYELLO() set_all_rgb( __max_brightness, __max_brightness,0)
-#define ALLLEDGREEN()  set_all_rgb( 0,__max_brightness,0)
-#define ALLLEDTURQUOISE()  set_all_rgb( 0,__max_brightness, __max_brightness)
-#define ALLLEDBLUE()  set_all_rgb( 0,0,__max_brightness)
-#define ALLLEDFUCHSIA()  set_all_rgb( __max_brightness,0,__max_brightness)
-#define ALLLEDWHITE()  set_all_rgb( __max_brightness,__max_brightness,__max_brightness)
+#define ALLLEDRED()  set_all_rgb( RR_LED_BRIGHTNESS_MAX,0,0)
+#define ALLLEDYELLO() set_all_rgb( RR_LED_BRIGHTNESS_MAX, RR_LED_BRIGHTNESS_MAX,0)
+#define ALLLEDGREEN()  set_all_rgb( 0,RR_LED_BRIGHTNESS_MAX,0)
+#define ALLLEDTURQUOISE()  set_all_rgb( 0,RR_LED_BRIGHTNESS_MAX, RR_LED_BRIGHTNESS_MAX)
+#define ALLLEDBLUE()  set_all_rgb( 0,0,RR_LED_BRIGHTNESS_MAX)
+#define ALLLEDFUCHSIA()  set_all_rgb( RR_LED_BRIGHTNESS_MAX,0,RR_LED_BRIGHTNESS_MAX)
+#define ALLLEDWHITE()  set_all_rgb( RR_LED_BRIGHTNESS_MAX,RR_LED_BRIGHTNESS_MAX,RR_LED_BRIGHTNESS_MAX)
