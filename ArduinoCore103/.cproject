@@ -37,6 +37,7 @@
 								</option>
 								<option id="de.innot.avreclipse.compiler.option.def.654157845" name="Define Syms (-D)" superClass="de.innot.avreclipse.compiler.option.def" valueType="definedSymbols">
 									<listOptionValue builtIn="false" value="ARDUINO=103"/>
+									<listOptionValue builtIn="false" value="__AVR_ATmega168P__"/>
 								</option>
 								<option id="de.innot.avreclipse.compiler.option.debug.type.401055391" name="Debug Info Format" superClass="de.innot.avreclipse.compiler.option.debug.type" value="de.innot.avreclipse.compiler.option.debug.level.default" valueType="enumerated"/>
 								<option id="de.innot.avreclipse.compiler.option.std.1941282309" name="Language Standard" superClass="de.innot.avreclipse.compiler.option.std" value="de.innot.avreclipse.compiler.option.std.default" valueType="enumerated"/>
@@ -56,6 +57,7 @@
 								</option>
 								<option id="de.innot.avreclipse.cppcompiler.option.def.1942806313" name="Define Syms (-D)" superClass="de.innot.avreclipse.cppcompiler.option.def" valueType="definedSymbols">
 									<listOptionValue builtIn="false" value="ARDUINO=103"/>
+									<listOptionValue builtIn="false" value="__AVR_ATmega168P__"/>
 								</option>
 								<option id="de.innot.avreclipse.cppcompiler.option.debug.type.1082686900" name="Debug Info Format" superClass="de.innot.avreclipse.cppcompiler.option.debug.type" value="de.innot.avreclipse.cppcompiler.option.debug.level.default" valueType="enumerated"/>
 								<option id="de.innot.avreclipse.cppcompiler.option.omitfcpu.686674903" name="Omit F_CPU" superClass="de.innot.avreclipse.cppcompiler.option.omitfcpu" value="false" valueType="boolean"/>

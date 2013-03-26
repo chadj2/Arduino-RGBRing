@@ -3,6 +3,9 @@
 // Description: Basic definitions for the RGB Ring.
 //////////////////////////////////////////////////////////////////////////////
 
+#ifndef RGBRINGDEFS_H_
+#define RGBRINGDEFS_H_
+
 //////////////////////////////////////////////////////////////////////////////
 // Pin to LED mapping: Intersection of color port and selector determine
 //   the LED that gets powered on. There are 2 color ports and 6 selectors
@@ -44,7 +47,7 @@
 #define RR_CPB_RED     	PIND5
 #define RR_CPB_GREEN   	PIND6
 #define RR_CPB_BLUE    	PIND7
-#define RR_CPB_WHITE   	(_BV(RR_CPB_RED) | _BV( RR_CPB_GREEN) | _BV(RR_CPB_BLUE))
+#define RR_CPB_WHITE   	(_BV(RR_CPB_RED) | _BV(RR_CPB_GREEN) | _BV(RR_CPB_BLUE))
 #define RR_CPB_DDR     	DDRD
 #define RR_CPB_PORT    	PORTD
 
@@ -52,4 +55,4 @@
 #define RR_BUTTON_1		3
 #define RR_BUTTON_2 	4
 
-
+#endif

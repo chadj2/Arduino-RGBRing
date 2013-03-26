@@ -1,0 +1,20 @@
+//////////////////////////////////////////////////////////////////////////////
+// Title: RGBRingDefs
+// Description: Basic definitions for the RGB Ring.
+//////////////////////////////////////////////////////////////////////////////
+
+#include <Arduino.h>
+#include <RGBDriver.h>
+
+RGBDriver g_rgbDriver = RGBDriver();
+
+void setup()
+{
+	//Serial.begin(38400);
+	g_rgbDriver.Setup();
+}
+
+void loop()
+{
+}
+
