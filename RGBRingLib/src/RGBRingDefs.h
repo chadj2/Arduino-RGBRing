@@ -13,7 +13,12 @@
 //   PORTD(RR_CPB_PORT): 5(RR_CPB_RED)   6(RR_CPB_GREEN) 7(RR_CPB_BLUE)
 //
 // Selector (cathodes HIGH --> OFF)
-//   PORTB: 0(RR_SEL_LED4) 1(RR_SEL_LED3) 2(RR_SEL_LED2) 3(RR_SEL_RR_SEL_LED1) 4(RR_SEL_LED0) 5(RR_SEL_LED5)
+//   PORTB: 0(RR_SEL_LED4)
+//		1(RR_SEL_LED3)
+//		2(RR_SEL_LED2)
+//		3(RR_SEL_LED1)
+//		4(RR_SEL_LED0)
+//		5(RR_SEL_LED5)
 //////////////////////////////////////////////////////////////////////////////
 
 // LED selector starting from the D10,Clockwise
@@ -42,3 +47,9 @@
 #define RR_CPB_WHITE   	(_BV(RR_CPB_RED) | _BV( RR_CPB_GREEN) | _BV(RR_CPB_BLUE))
 #define RR_CPB_DDR     	DDRD
 #define RR_CPB_PORT    	PORTD
+
+// Buttons
+#define RR_BUTTON_1		3
+#define RR_BUTTON_2 	4
+
+

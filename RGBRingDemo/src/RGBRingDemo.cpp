@@ -32,10 +32,11 @@
 
 #include "RgbRingUtil.h"
 #include "RgbRingUart.h"
+#include "RgbRingDefs.h"
 #include <Wire.h>
 
-int S1 = 3;
-int S2 = 4;
+//int S1 = 3;
+//int S2 = 4;
 int val1 = 0;     // variable to store the read value
 int val2 = 0;
 int turn = 1;
@@ -57,10 +58,10 @@ void setup()
 	Wire.begin(4);                // join i2c bus with address #4
 	Wire.onReceive(receiveEvent); // register event
 
-	pinMode(S1, INPUT);
-	pinMode(S2, INPUT);
-	digitalWrite(S1, HIGH);
-	digitalWrite(S2, HIGH);
+	pinMode(RR_BUTTON_1, INPUT);
+	pinMode(RR_BUTTON_2, INPUT);
+	digitalWrite(RR_BUTTON_1, HIGH);
+	digitalWrite(RR_BUTTON_2, HIGH);
 
 	// set the LED next to the buttons on
 	set_led_rgb(3, 0, 64, 0);
@@ -69,8 +70,8 @@ void setup()
 void loop()
 {
 	// get input
-	val1 = digitalRead(S1);
-	val2 = digitalRead(S2);
+	val1 = digitalRead(RR_BUTTON_1);
+	val2 = digitalRead(RR_BUTTON_2);
 
 	if (val1 == LOW)  // ================演示代码
 	{
