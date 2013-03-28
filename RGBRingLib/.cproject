@@ -26,7 +26,7 @@
 							<tool command="avr-gcc" commandLinePattern="${COMMAND} ${FLAGS} ${OUTPUT_FLAG} ${OUTPUT_PREFIX}${OUTPUT} ${INPUTS}" errorParsers="org.eclipse.cdt.core.GCCErrorParser" id="de.innot.avreclipse.tool.compiler.winavr.lib.release.141962469" name="AVR Compiler" superClass="de.innot.avreclipse.tool.compiler.winavr.lib.release">
 								<option id="de.innot.avreclipse.compiler.option.debug.level.332300278" name="Generate Debugging Info" superClass="de.innot.avreclipse.compiler.option.debug.level" value="de.innot.avreclipse.compiler.option.debug.level.none" valueType="enumerated"/>
 								<option id="de.innot.avreclipse.compiler.option.optimize.644874413" name="Optimization Level" superClass="de.innot.avreclipse.compiler.option.optimize" value="de.innot.avreclipse.compiler.optimize.size" valueType="enumerated"/>
-								<option id="de.innot.avreclipse.compiler.option.def.1694993591" superClass="de.innot.avreclipse.compiler.option.def" valueType="definedSymbols">
+								<option id="de.innot.avreclipse.compiler.option.def.1694993591" name="Define Syms (-D)" superClass="de.innot.avreclipse.compiler.option.def" valueType="definedSymbols">
 									<listOptionValue builtIn="false" value="ARDUINO=103"/>
 								</option>
 								<inputType id="de.innot.avreclipse.compiler.winavr.input.1136726798" name="C Source Files" superClass="de.innot.avreclipse.compiler.winavr.input"/>
@@ -75,4 +75,5 @@
 	</storageModule>
 	<storageModule moduleId="org.eclipse.cdt.core.LanguageSettingsProviders"/>
 	<storageModule moduleId="refreshScope"/>
+	<storageModule moduleId="org.eclipse.cdt.internal.ui.text.commentOwnerProjectMappings"/>
 </cproject>
