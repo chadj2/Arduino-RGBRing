@@ -2,13 +2,11 @@
  * RGBDriver.cpp
  *
  *  Created on: Mar 26, 2013
- *      Author: cjuliano
+ *      Author: Chad Juliano
  */
 
 #include "RGBDriver.h"
 #include <Arduino.h>
-
-// -----------------------Framebuffer interrupt routine-------------------------------//
 
 RGBDriver g_rgbDriver = RGBDriver();
 
@@ -48,20 +46,18 @@ void RGBDriver::Setup()
 
 void RGBDriver::SetupLeds()
 {
-	// LED selector
-	RR_SEL_DDR |= RR_SEL_ALLLED;  	// set PORTB as output
+	// Set LED selector data directions
+	RR_SEL_DDR |= RR_SEL_ALLLED;
 
-	// color port A
-	RR_CPA_DDR |= RR_CPA_WHITE;    	// set COLORPORT #5-7 as output
+	// Set colorport Data directions.
+	RR_CPA_DDR |= RR_CPA_WHITE;
+	RR_CPB_DDR |= RR_CPB_WHITE;
 
-	// color port B
-	RR_CPB_DDR |= RR_CPB_WHITE;    	// set COLORPORT #5-7 as output
+	SetLedAllOff();
 
 	// set LED1 to green.
 	//RR_SEL_PORT |= _BV(RR_SEL_LED1);
 	//RR_CPB_PORT |= _BV(RR_CPB_GREEN);
-
-	SetLedAllOff();
 }
 
 void RGBDriver::SetLedAllWhite(uint8_t n_level)
@@ -149,16 +145,26 @@ void RGBDriver::SetLedAllOff()
 	RR_SEL_PORT &= ~RR_SEL_ALLLED;
 }
 
+void RGBDriver::SetLedPorts(uint8_t n_selector, uint8_t cport_a, uint8_t cport_b)
+{
+	// select the appropriate LED
+	RR_SEL_PORT = (RR_SEL_PORT & ~RR_SEL_ALLLED) | _ledMap[n_selector];
+
+	// set colorports
+	RR_CPA_PORT = (RR_CPA_PORT & ~RR_CPA_WHITE) | cport_a;
+	RR_CPB_PORT = (RR_CPB_PORT & ~RR_CPB_WHITE) | cport_b;
+}
+
 void RGBDriver::TimerIteration()
 {
 	// reset timer
-	TCNT2 = _TIMER1_MAX - _TIMER1_CNT;
+	EnableTimer();
 
 	for (int n_level = 0; n_level < _BRIGHT_LEVELS; n_level++)
 	{
 		uint8_t n_led = 0;
 
-		for (int n_led_row = 0; n_led_row < 6; n_led_row++)
+		for (int n_led_sel = 0; n_led_sel < 6; n_led_sel++)
 		{
 			uint8_t cport_a = 0;
 			uint8_t cport_b = 0;
@@ -175,9 +181,7 @@ void RGBDriver::TimerIteration()
 			if (n_level < _ledColor[n_led][RED]) cport_b |= _BV(RR_CPB_RED);
 			n_led++;
 
-			RR_SEL_PORT = (RR_SEL_PORT & ~RR_SEL_ALLLED) | _ledMap[n_led_row];
-			RR_CPA_PORT = (RR_CPA_PORT & ~RR_CPA_WHITE) | cport_a;
-			RR_CPB_PORT = (RR_CPB_PORT & ~RR_CPB_WHITE) | cport_b;
+			SetLedPorts(n_led_sel, cport_a, cport_b);
 			//asm("nop");
 		}
 	}

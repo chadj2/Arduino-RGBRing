@@ -2,7 +2,7 @@
  * RGBDriver.h
  *
  *  Created on: Mar 26, 2013
- *      Author: cjuliano
+ *      Author: Chad Juliano
  */
 
 #ifndef RGBDRIVER_H_
@@ -47,10 +47,10 @@ public:
 private:
 
 	void SetupLeds();
-
+	void SetLedPorts(uint8_t n_selector, uint8_t cport_a, uint8_t cport_b);
 
 	/////////////////////////////////////////
-	// timer control
+	// timer interrupt control
 	/////////////////////////////////////////
 
 	// this may have to be adjusted if "RR_LED_BRIGHTNESS_LEVELS" is changed too much
