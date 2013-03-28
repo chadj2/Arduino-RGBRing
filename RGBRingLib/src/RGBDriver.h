@@ -42,10 +42,12 @@ public:
 	void SetLedAllWhite(uint8_t level);
 	void SetLedAll(color_t color, uint8_t level);
 	void SetLed(uint8_t led, color_t color, uint8_t level);
+	void SetLedAllOff();
 
 private:
 
 	void SetupLeds();
+
 
 	/////////////////////////////////////////
 	// timer control

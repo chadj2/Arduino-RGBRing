@@ -48,22 +48,20 @@ void RGBDriver::Setup()
 
 void RGBDriver::SetupLeds()
 {
-	// selector
+	// LED selector
 	RR_SEL_DDR |= RR_SEL_ALLLED;  	// set PORTB as output
-	RR_SEL_PORT &= ~RR_SEL_ALLLED; 	// all pins HIGH --> cathodes HIGH --> LEDs off
 
 	// color port A
 	RR_CPA_DDR |= RR_CPA_WHITE;    	// set COLORPORT #5-7 as output
-	RR_CPA_PORT &= ~RR_CPA_WHITE; 	// pins #5-7 LOW --> anodes LOW --> LEDs off
 
 	// color port B
 	RR_CPB_DDR |= RR_CPB_WHITE;    	// set COLORPORT #5-7 as output
-	RR_CPB_PORT &= ~RR_CPB_WHITE; 	// pins #5-7 LOW --> anodes LOW --> LEDs off
 
 	// set LED1 to green.
-	RR_SEL_PORT |= _BV(RR_SEL_LED1);
-	RR_CPB_PORT |= _BV(RR_CPB_GREEN);
+	//RR_SEL_PORT |= _BV(RR_SEL_LED1);
+	//RR_CPB_PORT |= _BV(RR_CPB_GREEN);
 
+	SetLedAllOff();
 }
 
 void RGBDriver::SetLedAllWhite(uint8_t n_level)
@@ -93,7 +91,16 @@ void RGBDriver::SetLed(uint8_t n_led, color_t color, uint8_t n_level)
 
 void RGBDriver::SetupTimer()
 {
-	// Arduino runs at 8 Mhz...
+	// TCCR2A – Timer/counter control register A
+	// COM2A1 = COM2A0 = 0: Normal port operation, OC2A disconnected
+	TCCR2A = 0;
+
+	// TCCR2B – Timer/counter control register B
+	// WGM22 = 0: Normal port operation, OC0A disconnected
+	// WGM22 = 1: Toggle OC2A on compare match
+	TCCR2B &= ~_BV(WGM22);
+
+	// Arduino runs at 16 Mhz...
 	// Timer2 (8bit) Settings:
 	// prescaler (frequency divider) values:   CS12    CS11   CS10
 	//                                           0       0      0    stopped
@@ -104,11 +111,8 @@ void RGBDriver::SetupTimer()
 	//                                           1       0      1      /128
 	//                                           1       1      0      /256
 	//                                           1       1      1      /1024
-	TCCR2B |= ((1 << CS22) | (1 << CS20) | ((1 << CS21)));    //1024###
-
-	//normal mode (16bit counter)
-	TCCR2B &= ~(1 << WGM22);
-	TCCR2A = 0;
+	// Timer/counter control register B (set to 1024)
+	TCCR2B |= _BV(CS22) | _BV(CS20) | _BV(CS21);
 
 	// enable global interrupts flag
 	sei();
@@ -116,18 +120,38 @@ void RGBDriver::SetupTimer()
 
 void RGBDriver::EnableTimer()
 {
+	// TCNT2 – Timer/counter register
 	TCNT2 = _TIMER1_MAX - _TIMER1_CNT;
-	TIMSK2 |= (1 << TOIE2);
+
+	// TIMSK2 – Timer/Counter2 interrupt mask register
+	// TOIE2: Timer/Counter2 overflow interrupt enable
+	TIMSK2 |= _BV(TOIE2);
 }
 
 void RGBDriver::DisableTimer(void)
 {
+	// turn off all LED's
 	RR_SEL_PORT &= ~RR_SEL_ALLLED;
-	TIMSK2 &= ~(1 << TOIE2);
+
+	// disable timer overflow
+	// TIMSK2 – Timer/Counter2 interrupt mask register
+	// TOIE2: Timer/Counter2 overflow interrupt enable
+	TIMSK2 &= ~_BV(TOIE2);
+}
+
+void RGBDriver::SetLedAllOff()
+{
+	// pins LOW --> anodes LOW --> LEDs off
+	RR_CPA_PORT &= ~RR_CPA_WHITE;
+	RR_CPB_PORT &= ~RR_CPB_WHITE;
+
+	// all pins HIGH --> cathodes HIGH --> LEDs off
+	RR_SEL_PORT &= ~RR_SEL_ALLLED;
 }
 
 void RGBDriver::TimerIteration()
 {
+	// reset timer
 	TCNT2 = _TIMER1_MAX - _TIMER1_CNT;
 
 	for (int n_level = 0; n_level < _BRIGHT_LEVELS; n_level++)
@@ -139,11 +163,7 @@ void RGBDriver::TimerIteration()
 			uint8_t cport_a = 0;
 			uint8_t cport_b = 0;
 
-			// all relevant anodes LOW --> OFF
-			RR_CPA_PORT &= ~RR_CPA_WHITE;
-			RR_CPB_PORT &= ~RR_CPB_WHITE;
-			// all cathodes HIGH --> OFF
-			RR_SEL_PORT &= ~RR_SEL_ALLLED;
+			SetLedAllOff();
 
 			if (n_level < _ledColor[n_led][GREEN]) cport_a |= _BV(RR_CPA_GREEN);
 			if (n_level < _ledColor[n_led][BLUE]) cport_a |= _BV(RR_CPA_BLUE);
@@ -162,5 +182,3 @@ void RGBDriver::TimerIteration()
 		}
 	}
 }
-
-
