@@ -26,7 +26,7 @@ uint8_t const RGBDriver::_ledMap[] = {
 
 RGBDriver::RGBDriver()
 {
-	SetLedAllWhite(0);
+	SetLedAll(WHITE, 0);
 	//Setup();
 }
 
@@ -60,13 +60,6 @@ void RGBDriver::SetupLeds()
 	//RR_CPB_PORT |= _BV(RR_CPB_GREEN);
 }
 
-void RGBDriver::SetLedAllWhite(uint8_t n_level)
-{
-	SetLedAll(RED, n_level);
-	SetLedAll(GREEN, n_level);
-	SetLedAll(BLUE, n_level);
-}
-
 void RGBDriver::SetLedAll(color_t color, uint8_t n_level)
 {
 	for(int n_led = 0; n_led < _LED_COUNT; n_led++)
@@ -75,14 +68,53 @@ void RGBDriver::SetLedAll(color_t color, uint8_t n_level)
 	}
 }
 
+void RGBDriver::SetLedRgb(uint8_t n_led, uint8_t n_red, uint8_t n_green, uint8_t n_blue)
+{
+	// turn down a little by 0.9. We avoid a decimal multiply
+	// because it would require flashing the floating point library.
+	n_green = (n_green*9/10);
+	n_red = (n_red*7/10);
+
+	_ledLevelBuffer[n_led][RED] = n_red;
+	_ledLevelBuffer[n_led][GREEN] = n_green;
+	_ledLevelBuffer[n_led][BLUE] = n_blue;
+}
+
 void RGBDriver::SetLed(uint8_t n_led, color_t color, uint8_t n_level)
 {
-	if(color == GREEN)
+	switch(color)
 	{
-		// turn down green a little.
-		n_level *= 0.9;
+		case WHITE:
+			SetLedRgb(n_led, n_level, n_level, n_level);
+			break;
+
+		case PURPLE:
+			SetLedRgb(n_led, n_level, 0, n_level);
+			break;
+
+		case YELLOW:
+			SetLedRgb(n_led, n_level, n_level, 0);
+			break;
+
+		case CYAN:
+			SetLedRgb(n_led, 0, n_level, n_level);
+			break;
+
+		case RED:
+			SetLedRgb(n_led, n_level, 0, 0);
+			break;
+
+		case GREEN:
+			SetLedRgb(n_led, 0, n_level, 0);
+			break;
+
+		case BLUE:
+			SetLedRgb(n_led, 0, 0, n_level);
+			break;
+
+		default:
+			break;
 	}
-	_ledColor[n_led][color] = n_level;
 }
 
 void RGBDriver::SetupTimer()
@@ -171,14 +203,14 @@ void RGBDriver::TimerIteration()
 
 			SetLedAllOff();
 
-			if (n_level < _ledColor[n_led][GREEN]) cport_a |= _BV(RR_CPA_GREEN);
-			if (n_level < _ledColor[n_led][BLUE]) cport_a |= _BV(RR_CPA_BLUE);
-			if (n_level < _ledColor[n_led][RED]) cport_a |= _BV(RR_CPA_RED);
+			if (n_level < _ledLevelBuffer[n_led][GREEN]) cport_a |= _BV(RR_CPA_GREEN);
+			if (n_level < _ledLevelBuffer[n_led][BLUE]) cport_a |= _BV(RR_CPA_BLUE);
+			if (n_level < _ledLevelBuffer[n_led][RED]) cport_a |= _BV(RR_CPA_RED);
 			n_led++;
 
-			if (n_level < _ledColor[n_led][GREEN]) cport_b |= _BV(RR_CPB_GREEN);
-			if (n_level < _ledColor[n_led][BLUE]) cport_b |= _BV(RR_CPB_BLUE);
-			if (n_level < _ledColor[n_led][RED]) cport_b |= _BV(RR_CPB_RED);
+			if (n_level < _ledLevelBuffer[n_led][GREEN]) cport_b |= _BV(RR_CPB_GREEN);
+			if (n_level < _ledLevelBuffer[n_led][BLUE]) cport_b |= _BV(RR_CPB_BLUE);
+			if (n_level < _ledLevelBuffer[n_led][RED]) cport_b |= _BV(RR_CPB_RED);
 			n_led++;
 
 			SetLedPorts(n_led_sel, cport_a, cport_b);

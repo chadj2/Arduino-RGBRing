@@ -19,7 +19,7 @@ public:
 	// Static definitions
 	/////////////////////////////////////////
 
-	enum color_t { RED, GREEN, BLUE };
+	enum color_t { RED, GREEN, BLUE, PURPLE, YELLOW, CYAN, WHITE };
 
 	// LED brightness levels
 	static const uint8_t _BRIGHT_LEVELS = 64;
@@ -39,22 +39,25 @@ public:
 	void TimerIteration();
 
 	// LED control
-	void SetLedAllWhite(uint8_t level);
-	void SetLedAll(color_t color, uint8_t level);
-	void SetLed(uint8_t led, color_t color, uint8_t level);
-	void SetLedAllOff();
+	void SetLedAll(color_t color, uint8_t level = _BRIGHT_MAX);
+	void SetLed(uint8_t led, color_t color, uint8_t level = _BRIGHT_MAX);
+	void SetLedRgb(uint8_t led, uint8_t n_red, uint8_t n_green, uint8_t n_blue);
 
 private:
 
 	void SetupLeds();
 	void SetLedPorts(uint8_t n_selector, uint8_t cport_a, uint8_t cport_b);
+	void SetLedAllOff();
 
 	/////////////////////////////////////////
 	// timer interrupt control
 	/////////////////////////////////////////
 
-	// this may have to be adjusted if "RR_LED_BRIGHTNESS_LEVELS" is changed too much
-	static const uint8_t _TIMER1_CNT = 0x30;
+	// _TIMER1_CNT may have to be adjusted if "RR_LED_BRIGHTNESS_LEVELS"
+	// is changed too much. Setting it too small will cause the interrupt to fail.
+	// Setting it too large will result in dimmer lights.
+	static const uint8_t _TIMER1_CNT = 0x2A;
+
 	// 8 bit CTR
 	static const uint8_t _TIMER1_MAX = 0xFF;
 
@@ -66,7 +69,7 @@ private:
 	static const uint8_t _ledMap[];
 
 	// store LED color levels
-	uint8_t _ledColor[_LED_COUNT][3];
+	uint8_t _ledLevelBuffer[_LED_COUNT][3];
 };
 
 extern RGBDriver g_rgbDriver;
