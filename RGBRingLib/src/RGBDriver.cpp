@@ -26,7 +26,7 @@ uint8_t const RGBDriver::_ledMap[] = {
 
 RGBDriver::RGBDriver()
 {
-	SetLedAll(WHITE, 0);
+	SetLedAll(RGBColor::WHITE, 0);
 	//Setup();
 }
 
@@ -60,61 +60,25 @@ void RGBDriver::SetupLeds()
 	//RR_CPB_PORT |= _BV(RR_CPB_GREEN);
 }
 
-void RGBDriver::SetLedAll(color_t color, uint8_t n_level)
+void RGBDriver::SetLedAll(RGBColor::color_t color, uint8_t n_level)
 {
 	for(int n_led = 0; n_led < _LED_COUNT; n_led++)
 	{
-		SetLed(n_led, color, n_level);
+		_ledColors[n_led].SetColor(color, n_level);
 	}
 }
 
-void RGBDriver::SetLedRgb(uint8_t n_led, uint8_t n_red, uint8_t n_green, uint8_t n_blue)
+void RGBDriver::SetLedAll(const RGBColor& color)
 {
-	// turn down a little by 0.9. We avoid a decimal multiply
-	// because it would require flashing the floating point library.
-	n_green = (n_green*9/10);
-	n_red = (n_red*7/10);
-
-	_ledLevelBuffer[n_led][RED] = n_red;
-	_ledLevelBuffer[n_led][GREEN] = n_green;
-	_ledLevelBuffer[n_led][BLUE] = n_blue;
-}
-
-void RGBDriver::SetLed(uint8_t n_led, color_t color, uint8_t n_level)
-{
-	switch(color)
+	for(int n_led = 0; n_led < _LED_COUNT; n_led++)
 	{
-		case WHITE:
-			SetLedRgb(n_led, n_level, n_level, n_level);
-			break;
-
-		case PURPLE:
-			SetLedRgb(n_led, n_level, 0, n_level);
-			break;
-
-		case YELLOW:
-			SetLedRgb(n_led, n_level, n_level, 0);
-			break;
-
-		case CYAN:
-			SetLedRgb(n_led, 0, n_level, n_level);
-			break;
-
-		case RED:
-			SetLedRgb(n_led, n_level, 0, 0);
-			break;
-
-		case GREEN:
-			SetLedRgb(n_led, 0, n_level, 0);
-			break;
-
-		case BLUE:
-			SetLedRgb(n_led, 0, 0, n_level);
-			break;
-
-		default:
-			break;
+		_ledColors[n_led] = color;
 	}
+}
+
+RGBColor& RGBDriver::operator[](uint8_t n_led)
+{
+	return _ledColors[n_led];
 }
 
 void RGBDriver::SetupTimer()
@@ -179,6 +143,13 @@ void RGBDriver::SetLedAllOff()
 
 void RGBDriver::SetLedPorts(uint8_t n_selector, uint8_t cport_a, uint8_t cport_b)
 {
+	// clear all ports
+	SetLedAllOff();
+
+	// give ports a little time to react
+	asm("nop");
+	asm("nop");
+
 	// select the appropriate LED
 	RR_SEL_PORT = (RR_SEL_PORT & ~RR_SEL_ALLLED) | _ledMap[n_selector];
 
@@ -192,29 +163,33 @@ void RGBDriver::TimerIteration()
 	// reset timer
 	EnableTimer();
 
-	for (int n_level = 0; n_level < _BRIGHT_LEVELS; n_level++)
+	// we scale the _BRIGHT_MAX by a factor given by _SCALE_DIVISOR
+	// [0],[1],[2],[3] => [0,1,2,3],[4,5,6,7],[8,9,10,11],[12,13,14,15]
+	for (uint8_t n_level = _SCALE_DIVISOR - 1;
+			n_level < RGBColor::_BRIGHT_MAX;
+			n_level += _SCALE_DIVISOR)
 	{
 		uint8_t n_led = 0;
 
-		for (int n_led_sel = 0; n_led_sel < 6; n_led_sel++)
+		for (uint8_t n_led_sel = 0; n_led_sel < 6; n_led_sel++)
 		{
 			uint8_t cport_a = 0;
 			uint8_t cport_b = 0;
 
-			SetLedAllOff();
-
-			if (n_level < _ledLevelBuffer[n_led][GREEN]) cport_a |= _BV(RR_CPA_GREEN);
-			if (n_level < _ledLevelBuffer[n_led][BLUE]) cport_a |= _BV(RR_CPA_BLUE);
-			if (n_level < _ledLevelBuffer[n_led][RED]) cport_a |= _BV(RR_CPA_RED);
+			RGBColor& ledColorA = _ledColors[n_led];
 			n_led++;
+			if (n_level < ledColorA._green) cport_a |= _BV(RR_CPA_GREEN);
+			if (n_level < ledColorA._blue) cport_a |= _BV(RR_CPA_BLUE);
+			if (n_level < ledColorA._red) cport_a |= _BV(RR_CPA_RED);
 
-			if (n_level < _ledLevelBuffer[n_led][GREEN]) cport_b |= _BV(RR_CPB_GREEN);
-			if (n_level < _ledLevelBuffer[n_led][BLUE]) cport_b |= _BV(RR_CPB_BLUE);
-			if (n_level < _ledLevelBuffer[n_led][RED]) cport_b |= _BV(RR_CPB_RED);
+			RGBColor& ledColorB = _ledColors[n_led];
 			n_led++;
+			if (n_level < ledColorB._green) cport_b |= _BV(RR_CPB_GREEN);
+			if (n_level < ledColorB._blue) cport_b |= _BV(RR_CPB_BLUE);
+			if (n_level < ledColorB._red) cport_b |= _BV(RR_CPB_RED);
 
 			SetLedPorts(n_led_sel, cport_a, cport_b);
-			//asm("nop");
 		}
 	}
+	SetLedAllOff();
 }
