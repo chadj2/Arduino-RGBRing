@@ -259,16 +259,9 @@ void appStart() __attribute__ ((naked));
 #ifdef RLED_RING
 void setColor(uint8_t color)
 {
-	RR_CPB_DDR = (RR_CPB_PORT |= RR_CPB_WHITE);
-	//RR_CPB_DDR = RR_CPB_WHITE;
-	RR_CPB_PORT &= ~RR_CPB_WHITE | _BV(color);
+	RR_CPB_PORT = (RR_CPB_PORT & ~RR_CPB_WHITE) | _BV(color);
 }
 
-/*
-#define setColor(_COLOR) \
-	RR_CPB_DDR = (RR_CPB_PORT |= RR_CPB_WHITE); \
-	RR_CPB_PORT &= ~RR_CPB_WHITE | _BV(_COLOR);
-*/
 #endif
 
 /* main program starts here */
@@ -304,6 +297,7 @@ int main(void)
 	watchdogConfig(WATCHDOG_1S);
 
 #ifdef RLED_RING
+	RR_CPB_DDR = (RR_CPB_PORT |= RR_CPB_WHITE);
 	setColor(RR_CPB_BLUE);
 #endif
 
